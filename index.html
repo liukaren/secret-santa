@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <title>Secret Santa!</title>
+        <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+        <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+        <script type="text/javascript">
+            var ref = new Firebase("https://scorching-inferno-8300.firebaseio.com/");
+            var usersRef = ref.child('test-room').child('users')
+            usersRef.on('value', function(usersResponse) {
+                var users = usersResponse.val()
+                for (key in users) {
+                    $('#room-members').append('<p>' + users[key] + '</p>');
+                }
+            });
+        </script>
+    </head>
+    <body>
+        People in this room!
+        <div id="room-members"></div>
+    </body>
+</html>
