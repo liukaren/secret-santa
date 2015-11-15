@@ -7,12 +7,13 @@
             var ref = new Firebase("https://scorching-inferno-8300.firebaseio.com/");
 
             function showUsersInRoom(roomName) {
-                $('#room-members').empty();
+                window.currentRoomName = roomName;
                 var usersRef = ref.child(roomName).child('users')
                 usersRef.on('value', function(usersResponse) {
                     var users = usersResponse.val()
                     $('#room-members-title').show();
                     $('#add-user-form').show();
+                    $('#room-members').empty();
                     for (key in users) {
                         $('#room-members').append('<p>' + users[key] + '</p>');
                     }
@@ -21,11 +22,20 @@
 
             $(function() {
                 $("#room-form").submit(function(event) {
-                    event.preventDefault();
                     var roomName = $('#room-input').val();
                     showUsersInRoom(roomName);
+                    return false;
                 });
 
+                $('#add-user-form').submit(function(event) {
+                    var usersRef = ref.child(window.currentRoomName).child('users');
+                    var userName = $('#user-name-input').val();
+                    usersRef.push(userName);
+                    $('#add-user-form').hide();
+                    return false;
+                });
+
+                // Hide room members and add user form until a room is chosen
                 $('#room-members-title').hide();
                 $('#add-user-form').hide();
             });
