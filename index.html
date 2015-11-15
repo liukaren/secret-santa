@@ -5,17 +5,52 @@
         <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
         <script type="text/javascript">
             var ref = new Firebase("https://scorching-inferno-8300.firebaseio.com/");
-            var usersRef = ref.child('test-room').child('users')
-            usersRef.on('value', function(usersResponse) {
-                var users = usersResponse.val()
-                for (key in users) {
-                    $('#room-members').append('<p>' + users[key] + '</p>');
-                }
+
+            function showUsersInRoom(roomName) {
+                $('#room-members').empty();
+                var usersRef = ref.child(roomName).child('users')
+                usersRef.on('value', function(usersResponse) {
+                    var users = usersResponse.val()
+                    $('#room-members-title').show();
+                    $('#add-user-form').show();
+                    for (key in users) {
+                        $('#room-members').append('<p>' + users[key] + '</p>');
+                    }
+                });
+            }
+
+            $(function() {
+                $("#room-form").submit(function(event) {
+                    event.preventDefault();
+                    var roomName = $('#room-input').val();
+                    showUsersInRoom(roomName);
+                });
+
+                $('#room-members-title').hide();
+                $('#add-user-form').hide();
             });
         </script>
     </head>
     <body>
-        People in this room!
+        <form id="room-form">
+            <label>
+                What is the Secret Santa room name?
+                <input type="text" id="room-input" value="">
+            </label>
+            <input type="submit" value="Go">
+        </form>
+
+        <div id="room-members-title">
+            In this room so far:
+        </div>
         <div id="room-members"></div>
+        <form id="add-user-form">
+            <label>
+                Who are you?
+                <input type="text" id="user-name-input" value="">
+            </label>
+            <input type="submit" value="Go">
+        </form>
+
     </body>
 </html>
