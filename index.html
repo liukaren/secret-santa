@@ -8,14 +8,16 @@
 
             function showUsersInRoom(roomName) {
                 window.currentRoomName = roomName;
+                window.currentRoomMembers = [];
                 $('#assign-button').hide();
                 $('#room-members').empty();
                 var usersRef = ref.child(roomName).child('users')
-                usersRef.on('child_added', function(usersResponse) {
-                    var users = usersResponse.val()
+                usersRef.on('child_added', function(userResponse) {
+                    var user = userResponse.val()
                     $('#room-members-title').show();
                     $('#add-user-form').show();
-                    $('#room-members').append('<p>' + users + '</p>');
+                    window.currentRoomMembers.push(user);
+                    $('#room-members').append('<p>' + user + '</p>');
                 });
 
                 ref.child(roomName).on('value', function(roomResponse) {
@@ -26,6 +28,27 @@
                         $('#assign-button').show();
                     }
                 });
+            }
+
+            // http://stackoverflow.com/a/12646864
+            function shuffleArray(array) {
+                for (var i = array.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                }
+                return array;
+            }
+
+            // Basically checks if anyone got themselves.
+            function isValidShuffle(array1, array2) {
+                for (var i = 0; i < array1.length; i++) {
+                    if (array1[i] === array2[i]) {
+                        return false;
+                    }
+                }
+                return true;
             }
 
             $(function() {
@@ -40,6 +63,19 @@
                     var userName = $('#user-name-input').val();
                     usersRef.push(userName);
                     $('#add-user-form').hide();
+                    return false;
+                });
+
+                $('#assign-button').click(function(event) {
+                    var shuffledUsers = window.currentRoomMembers.slice(0);
+                    do {
+                        shuffleArray(shuffledUsers);
+                    } while (!isValidShuffle(shuffledUsers, window.currentRoomMembers));
+
+                    var assignmentsRef = ref.child(window.currentRoomName).child('assignments');
+                    assignmentsRef.set(shuffledUsers);
+
+                    $('#assign-button').hide();
                     return false;
                 });
 
