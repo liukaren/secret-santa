@@ -9,6 +9,12 @@ body {
     width: 80%;
 }
 
+#room-details,
+#room-form,
+.room-member {
+    animation: fadein 1.5s;
+}
+
 .room-member {
     background: repeating-linear-gradient(
         45deg,
@@ -39,4 +45,9 @@ body {
 .input[type="text"]:focus,
 .input[type="text"].focus {
     border-bottom: solid 2px #969696;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }

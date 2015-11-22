@@ -61,7 +61,7 @@
                     var usersRef = ref.child(window.currentRoomName).child('users');
                     var userName = $('#user-name-input').val();
                     usersRef.push(userName);
-                    $('#add-user-form').hide();
+                    $('#add-user-form').slideUp('slow');
                     return false;
                 });
 
@@ -80,7 +80,7 @@
                     var assignmentsRef = ref.child(window.currentRoomName).child('assignments');
                     assignmentsRef.set(shuffledUsers);
 
-                    $('#assign-button').hide();
+                    $('#assign-button').slideUp('slow');
                     return false;
                 });
 
