@@ -66,6 +66,12 @@
                     return false;
                 });
 
+                $('#assign-button').hover(function(event) {
+                    $(this).find('#button-text').addClass('animated wobble')
+                }, function(event) {
+                    $(this).find('#button-text').removeClass('animated wobble')
+                });
+
                 $('#assign-button').click(function(event) {
                     var shuffledUsers = window.currentRoomMembers.slice(0);
                     do {
@@ -85,6 +91,9 @@
                 $('#assign-button').hide();
             });
         </script>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css" />
+        <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
         <form id="room-form">
@@ -106,6 +115,8 @@
             </label>
             <input type="submit" value="Go">
         </form>
-        <button id="assign-button">Shake the hat</button>
+        <button id="assign-button">
+            <div id="button-text">Shake the hat</div>
+        </button>
     </body>
 </html>
