@@ -18937,7 +18937,6 @@ function showUsersInRoom(roomName) {
         var userKey = userResponse.key();
         var userName = userResponse.val();
         window.currentRoomMembers[userKey] = userName;
-        $('#room-details').show();
         $('#room-members').append('<span class="room-member">' + userName + '</span>');
     });
 
@@ -18962,10 +18961,14 @@ function showUsersInRoom(roomName) {
 var RoomForm = React.createClass({
     displayName: 'RoomForm',
 
+    propTypes: {
+        handleSubmitRoom: React.PropTypes.func
+    },
+
     handleSubmitRoom: function (e) {
         e.preventDefault();
         var roomName = $('#room-input').val();
-        showUsersInRoom(roomName);
+        this.props.handleSubmitRoom.call(null, roomName);
     },
 
     render: function () {
@@ -18995,7 +18998,13 @@ var RoomForm = React.createClass({
     }
 });
 
-ReactDOM.render(React.createElement(RoomForm, null), document.getElementById('choose-room-target'));
+function handleSubmitRoom(roomName) {
+    console.log('handleSubmitRoom called with', roomName);
+    $('#room-details').show();
+    showUsersInRoom(roomName);
+}
+
+ReactDOM.render(React.createElement(RoomForm, { handleSubmitRoom: handleSubmitRoom }), document.getElementById('choose-room-target'));
 
 },{"react":157,"react-dom":1}],159:[function(require,module,exports){
 // shim for using process in browser

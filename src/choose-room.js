@@ -6,12 +6,11 @@ function showUsersInRoom(roomName) {
     window.currentRoomMembers = {};
     $('#assign-button').hide();
     $('#room-members').empty();
-    var usersRef = ref.child(roomName).child('users')
+    var usersRef = ref.child(roomName).child('users');
     usersRef.on('child_added', function(userResponse) {
         var userKey = userResponse.key();
         var userName = userResponse.val();
         window.currentRoomMembers[userKey] = userName;
-        $('#room-details').show();
         $('#room-members').append('<span class="room-member">' + userName + '</span>');
     });
 
@@ -34,10 +33,14 @@ function showUsersInRoom(roomName) {
 }
 
 var RoomForm = React.createClass({
+    propTypes: {
+        handleSubmitRoom: React.PropTypes.func
+    },
+
     handleSubmitRoom: function(e) {
         e.preventDefault();
         var roomName = $('#room-input').val();
-        showUsersInRoom(roomName);
+        this.props.handleSubmitRoom.call(null, roomName);
     },
 
     render: function() {
@@ -53,7 +56,14 @@ var RoomForm = React.createClass({
     }
 });
 
+// TODO: Wrap this component in another component that handles switching between pages.
+
+function handleSubmitRoom(roomName) {
+    $('#room-details').show();
+    showUsersInRoom(roomName);
+}
+
 ReactDOM.render(
-    <RoomForm />,
+    <RoomForm handleSubmitRoom={ handleSubmitRoom } />,
     document.getElementById('choose-room-target')
 );
