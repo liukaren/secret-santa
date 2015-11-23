@@ -6,38 +6,6 @@
         <script type="text/javascript">
             var ref = new Firebase("https://scorching-inferno-8300.firebaseio.com/");
 
-            function showUsersInRoom(roomName) {
-                window.currentRoomName = roomName;
-                window.currentRoomMembers = {};
-                $('#assign-button').hide();
-                $('#room-members').empty();
-                var usersRef = ref.child(roomName).child('users')
-                usersRef.on('child_added', function(userResponse) {
-                    var userKey = userResponse.key();
-                    var userName = userResponse.val();
-                    window.currentRoomMembers[userKey] = userName;
-                    $('#room-details').show();
-                    $('#room-members').append('<span class="room-member">' + userName + '</span>');
-                });
-
-                ref.child(roomName).child('assignments').on('value', function(assignments) {
-                    // If we have people in the room and we don't have assignments,
-                    // show the assign button.
-                    if (Object.keys(window.currentRoomMembers).length > 1 && !assignments.val()) {
-                        $('#assign-button').show();
-                    }
-
-                    // If assignments exist, show the current user's assignment.
-                    if (window.currentUserRef) {
-                        var currentUserKey = window.currentUserRef.key();
-                        var assignmentKey = assignments.val()[currentUserKey];
-
-                        $('#assignment').show();
-                        $('#assignment-name').text(window.currentRoomMembers[assignmentKey]);
-                    }
-                });
-            }
-
             // http://stackoverflow.com/a/12646864
             function shuffleArray(array) {
                 for (var i = array.length - 1; i > 0; i--) {
@@ -60,12 +28,6 @@
             }
 
             $(function() {
-                $("#room-form").submit(function(event) {
-                    var roomName = $('#room-input').val();
-                    showUsersInRoom(roomName);
-                    return false;
-                });
-
                 $('#add-user-form').submit(function(event) {
                     var usersRef = ref.child(window.currentRoomName).child('users');
                     var userName = $('#user-name-input').val();
