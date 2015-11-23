@@ -11,6 +11,7 @@ body {
 
 #room-details,
 #room-form,
+#assignment,
 .room-member {
     animation: fadein 1.5s;
 }

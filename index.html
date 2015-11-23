@@ -8,23 +8,32 @@
 
             function showUsersInRoom(roomName) {
                 window.currentRoomName = roomName;
-                window.currentRoomMembers = [];
+                window.currentRoomMembers = {};
                 $('#assign-button').hide();
                 $('#room-members').empty();
                 var usersRef = ref.child(roomName).child('users')
                 usersRef.on('child_added', function(userResponse) {
-                    var user = userResponse.val()
+                    var userKey = userResponse.key();
+                    var userName = userResponse.val();
+                    window.currentRoomMembers[userKey] = userName;
                     $('#room-details').show();
-                    window.currentRoomMembers.push(user);
-                    $('#room-members').append('<span class="room-member">' + user + '</span>');
+                    $('#room-members').append('<span class="room-member">' + userName + '</span>');
                 });
 
-                ref.child(roomName).on('value', function(roomResponse) {
+                ref.child(roomName).child('assignments').on('value', function(assignments) {
                     // If we have people in the room and we don't have assignments,
                     // show the assign button.
-                    var roomObj = roomResponse.val();
-                    if (Object.keys(roomObj.users).length > 1 && !roomObj.assignments) {
+                    if (Object.keys(window.currentRoomMembers).length > 1 && !assignments.val()) {
                         $('#assign-button').show();
+                    }
+
+                    // If assignments exist, show the current user's assignment.
+                    if (window.currentUserRef) {
+                        var currentUserKey = window.currentUserRef.key();
+                        var assignmentKey = assignments.val()[currentUserKey];
+
+                        $('#assignment').show();
+                        $('#assignment-name').text(window.currentRoomMembers[assignmentKey]);
                     }
                 });
             }
@@ -60,7 +69,7 @@
                 $('#add-user-form').submit(function(event) {
                     var usersRef = ref.child(window.currentRoomName).child('users');
                     var userName = $('#user-name-input').val();
-                    usersRef.push(userName);
+                    window.currentUserRef = usersRef.push(userName);
                     $('#add-user-form').slideUp('slow');
                     return false;
                 });
@@ -72,13 +81,19 @@
                 });
 
                 $('#assign-button').click(function(event) {
-                    var shuffledUsers = window.currentRoomMembers.slice(0);
+                    var originalUsers = Object.keys(window.currentRoomMembers);
+                    var shuffledUsers = originalUsers.slice(0);
                     do {
                         shuffleArray(shuffledUsers);
-                    } while (!isValidShuffle(shuffledUsers, window.currentRoomMembers));
+                    } while (!isValidShuffle(shuffledUsers, originalUsers));
 
                     var assignmentsRef = ref.child(window.currentRoomName).child('assignments');
-                    assignmentsRef.set(shuffledUsers);
+
+                    var newAssignments = {};
+                    for (var i = 0; i < shuffledUsers.length; i++) {
+                        newAssignments[originalUsers[i]] = shuffledUsers[i];
+                    }
+                    assignmentsRef.set(newAssignments);
 
                     $('#assign-button').slideUp('slow');
                     return false;
@@ -87,6 +102,7 @@
                 // Hide most elements until a room is chosen
                 $('#room-details').hide();
                 $('#assign-button').hide();
+                $('#assignment').hide();
             });
         </script>
         <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
@@ -107,7 +123,7 @@
 
             <div id="room-details">
                 <div id="room-members-title">
-                    <strong>In this room so far:</strong>
+                    <strong>In this room:</strong>
                 </div>
                 <div id="room-members"></div>
                 <form id="add-user-form">
@@ -121,6 +137,11 @@
                 <button id="assign-button" class="btn btn-1 btn-1e" type="submit">
                     <div id="button-text">Shake the hat</div>
                 </button>
+            </div>
+
+            <div id="assignment">
+                <strong>You are the Secret Santa for:</strong>
+                <span class="room-member" id="assignment-name"></span>
             </div>
         </div>
     </body>
