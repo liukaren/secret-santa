@@ -1,8 +1,8 @@
 <html>
     <head>
         <title>Secret Santa!</title>
-        <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
-        <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+        <script type="text/javascript" src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
         <script type="text/javascript">
             var ref = new Firebase("https://scorching-inferno-8300.firebaseio.com/");
 
@@ -113,13 +113,7 @@
     </head>
     <body>
         <div class="content-container">
-            <form id="room-form">
-                <label>
-                    <div><strong>What is the Secret Santa room name?</strong></div>
-                    <input class="input" type="text" id="room-input" value="">
-                </label>
-                <button class="btn btn-1 btn-1e" type="submit">Go</button>
-            </form>
+            <div id="choose-room-target"></div>
 
             <div id="room-details">
                 <div id="room-members-title">
@@ -144,5 +138,6 @@
                 <span class="room-member" id="assignment-name"></span>
             </div>
         </div>
+        <script type="text/javascript" src="index.js"></script>
     </body>
 </html>
