@@ -5,39 +5,6 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
         <script type="text/javascript">
             var ref = new Firebase("https://scorching-inferno-8300.firebaseio.com/");
-
-            // http://stackoverflow.com/a/12646864
-            function shuffleArray(array) {
-                for (var i = array.length - 1; i > 0; i--) {
-                    var j = Math.floor(Math.random() * (i + 1));
-                    var temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                }
-                return array;
-            }
-
-            // Basically checks if anyone got themselves.
-            function isValidShuffle(array1, array2) {
-                for (var i = 0; i < array1.length; i++) {
-                    if (array1[i] === array2[i]) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            $(function() {
-                $('#add-user-form').submit(function(event) {
-                    var usersRef = ref.child(window.currentRoomName).child('users');
-                    var userName = $('#user-name-input').val();
-                    window.currentUserRef = usersRef.push(userName);
-                    $('#add-user-form').slideUp('slow');
-                    return false;
-                });
-
-                $('#assignment').hide();
-            });
         </script>
         <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
         <link rel="stylesheet"
@@ -47,12 +14,7 @@
     </head>
     <body>
         <div class="content-container">
-            <div id="choose-room-target"></div>
-
-            <div id="assignment">
-                <strong>You are the Secret Santa for:</strong>
-                <span class="room-member" id="assignment-name"></span>
-            </div>
+            <div id="secretSantaTarget"></div>
         </div>
         <script type="text/javascript" src="index.js"></script>
     </body>
