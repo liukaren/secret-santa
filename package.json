@@ -4,6 +4,7 @@
   "description": "Organize your Secret Santa without a physical hat of names!",
   "main": "index.js",
   "scripts": {
+    "build": "browserify -t [ babelify --presets [ react ] ] src/main.js -o index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Karen Liu",
