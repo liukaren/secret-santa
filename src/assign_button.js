@@ -25,11 +25,11 @@ function isValidShuffle(array1, array2) {
 
 module.exports = React.createClass({
     propTypes: {
-        roomName: React.PropTypes.string.isRequired,
-        members: React.PropTypes.object.isRequired
+        members: React.PropTypes.object.isRequired,
+        handleAssign: React.PropTypes.func.isRequired
     },
 
-    handleAssignClick: function() {
+    handleAssign: function() {
         const originalUsers = Object.keys(this.props.members);
         const shuffledUsers = originalUsers.slice(0);
         do {
@@ -40,7 +40,7 @@ module.exports = React.createClass({
         for (let i in shuffledUsers) {
             newAssignments[originalUsers[i]] = shuffledUsers[i];
         }
-        ref.child(this.props.roomName).child('assignments').set(newAssignments);
+        this.props.handleAssign.call(null, newAssignments);
     },
 
     handleMouseEnter: function() {
@@ -56,7 +56,7 @@ module.exports = React.createClass({
             <button id="assign-button"
                     className="btn btn-1 btn-1e"
                     type="submit"
-                    onClick={ this.handleAssignClick }
+                    onClick={ this.handleAssign }
                     onMouseEnter={ this.handleMouseEnter }
                     onMouseLeave={ this.handleMouseLeave }>
                 <div id="button-text">Shake the hat</div>

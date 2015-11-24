@@ -2,12 +2,15 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
+const Firebase = require('firebase');
 
 const AssignButton = require('./assign_button.js');
 const Assignment = require('./assignment.js');
 const CurrentUserForm = require('./current_user_form.js');
 const RoomMemberList = require('./room_member_list.js');
 const SelectRoomForm = require('./select_room_form.js');
+
+const firebaseRef = new Firebase('https://scorching-inferno-8300.firebaseio.com/');
 
 const SecretSanta = React.createClass({
     getInitialState: function() {
@@ -21,7 +24,7 @@ const SecretSanta = React.createClass({
     },
 
     handleSubmitRoom: function(roomName) {
-        const usersRef = ref.child(roomName).child('users');
+        const usersRef = firebaseRef.child(roomName).child('users');
         usersRef.on('child_added', (userResponse) => {
             const userKey = userResponse.key();
             const userName = userResponse.val();
@@ -31,7 +34,7 @@ const SecretSanta = React.createClass({
             this.setState({ members: newMembers });
         });
 
-        ref.child(roomName).child('assignments').on('value', (assignments) => {
+        firebaseRef.child(roomName).child('assignments').on('value', (assignments) => {
             this.setState({ hasAssignments: assignments.val() });
 
             // If assignments exist, show the current user's assignment.
@@ -49,8 +52,12 @@ const SecretSanta = React.createClass({
     },
 
     handleAddUser: function(userName) {
-        const userRef = ref.child(this.state.roomName).child('users').push(userName);
+        const userRef = firebaseRef.child(this.state.roomName).child('users').push(userName);
         this.setState({ currentUserRef: userRef });
+    },
+
+    handleAssign: function(assignments) {
+        firebaseRef.child(this.props.roomName).child('assignments').set(assignments);
     },
 
     render: function() {
@@ -69,8 +76,8 @@ const SecretSanta = React.createClass({
                 }
                 {
                     Object.keys(this.state.members).length > 1 && !this.state.hasAssignments ?
-                    <AssignButton roomName={ this.state.roomName }
-                                  members={ this.state.members } /> :
+                    <AssignButton members={ this.state.members }
+                                  handleAssign={ this.handleAssign } /> :
                     null
                 }
                 {
