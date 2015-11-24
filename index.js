@@ -18924,6 +18924,8 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":25}],158:[function(require,module,exports){
+'use strict';
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -18931,14 +18933,6 @@ function showUsersInRoom(roomName) {
     window.currentRoomName = roomName;
     window.currentRoomMembers = {};
     $('#assign-button').hide();
-    $('#room-members').empty();
-    var usersRef = ref.child(roomName).child('users');
-    usersRef.on('child_added', function (userResponse) {
-        var userKey = userResponse.key();
-        var userName = userResponse.val();
-        window.currentRoomMembers[userKey] = userName;
-        $('#room-members').append('<span class="room-member">' + userName + '</span>');
-    });
 
     ref.child(roomName).child('assignments').on('value', function (assignments) {
         // If we have people in the room and we don't have assignments,
@@ -18958,8 +18952,8 @@ function showUsersInRoom(roomName) {
     });
 }
 
-var RoomForm = React.createClass({
-    displayName: 'RoomForm',
+var SelectRoomForm = React.createClass({
+    displayName: 'SelectRoomForm',
 
     propTypes: {
         handleSubmitRoom: React.PropTypes.func
@@ -18998,13 +18992,156 @@ var RoomForm = React.createClass({
     }
 });
 
-function handleSubmitRoom(roomName) {
-    console.log('handleSubmitRoom called with', roomName);
-    $('#room-details').show();
-    showUsersInRoom(roomName);
-}
+var RoomMemberList = React.createClass({
+    displayName: 'RoomMemberList',
 
-ReactDOM.render(React.createElement(RoomForm, { handleSubmitRoom: handleSubmitRoom }), document.getElementById('choose-room-target'));
+    propTypes: {
+        members: React.PropTypes.object.isRequired
+    },
+
+    getInitialState: function () {
+        return {
+            hasAssignments: false
+        };
+    },
+
+    handleAssignClick: function () {
+        this.setState({
+            hasAssignments: true
+        });
+
+        console.log('assigned!');
+        // var originalUsers = Object.keys(window.currentRoomMembers);
+        // var shuffledUsers = originalUsers.slice(0);
+        // do {
+        //     shuffleArray(shuffledUsers);
+        // } while (!isValidShuffle(shuffledUsers, originalUsers));
+
+        // var assignmentsRef = ref.child(window.currentRoomName).child('assignments');
+
+        // var newAssignments = {};
+        // for (var i = 0; i < shuffledUsers.length; i++) {
+        //     newAssignments[originalUsers[i]] = shuffledUsers[i];
+        // }
+        // assignmentsRef.set(newAssignments);
+    },
+
+    render: function () {
+        const members = this.props.members;
+        const roomMembersEl = Object.keys(members).map(function (memberKey) {
+            return React.createElement(
+                'span',
+                { className: 'room-member', id: memberKey },
+                members[memberKey]
+            );
+        });
+
+        return React.createElement(
+            'div',
+            { id: 'room-details' },
+            React.createElement(
+                'div',
+                { id: 'room-members-title' },
+                React.createElement(
+                    'strong',
+                    null,
+                    'In this room:'
+                )
+            ),
+            React.createElement(
+                'div',
+                { id: 'room-members' },
+                roomMembersEl
+            ),
+            React.createElement(
+                'form',
+                { id: 'add-user-form' },
+                React.createElement(
+                    'label',
+                    null,
+                    React.createElement(
+                        'div',
+                        null,
+                        React.createElement(
+                            'strong',
+                            null,
+                            'Who are you?'
+                        )
+                    ),
+                    React.createElement('input', { className: 'input', type: 'text', id: 'user-name-input' })
+                ),
+                React.createElement(
+                    'button',
+                    { className: 'btn btn-1 btn-1e', type: 'submit' },
+                    'That\'s me'
+                )
+            ),
+            this.state.hasAssignments ? null : React.createElement(
+                'button',
+                { id: 'assign-button',
+                    className: 'btn btn-1 btn-1e',
+                    type: 'submit',
+                    onClick: this.handleAssignClick,
+                    onMouseEnter: () => {
+                        $('#button-text').addClass('animated shake');
+                    },
+                    onMouseLeave: () => {
+                        $('#button-text').removeClass('animated shake');
+                    } },
+                React.createElement(
+                    'div',
+                    { id: 'button-text' },
+                    'Shake the hat'
+                )
+            )
+        );
+    }
+});
+
+var SecretSanta = React.createClass({
+    displayName: 'SecretSanta',
+
+    getInitialState: function () {
+        return {
+            isRoomSelected: false,
+            members: {} // a mapping from user's Firebase key to user's name
+        };
+    },
+
+    handleSubmitRoom: function (roomName) {
+        const usersRef = ref.child(roomName).child('users');
+        usersRef.on('child_added', userResponse => {
+            const userKey = userResponse.key();
+            const userName = userResponse.val();
+
+            if (this.isMounted()) {
+                let newMembers = Object.assign({}, this.state.members);
+                newMembers[userKey] = userName;
+                this.setState({
+                    members: newMembers
+                });
+            }
+        });
+
+        showUsersInRoom(roomName);
+
+        this.setState({
+            isRoomSelected: true
+        });
+    },
+
+    render: function () {
+        return React.createElement(
+            'div',
+            null,
+            this.state.isRoomSelected ? React.createElement(RoomMemberList, { members: this.state.members }) : React.createElement(SelectRoomForm, { handleSubmitRoom: this.handleSubmitRoom })
+        );
+    }
+});
+
+// TODO: Wrap this component in another component that handles switching between pages.
+
+ReactDOM.render(React.createElement(SecretSanta, null), document.getElementById('choose-room-target'));
 
 },{"react":157,"react-dom":1}],159:[function(require,module,exports){
 // shim for using process in browser

@@ -9,6 +9,10 @@ body {
     width: 80%;
 }
 
+#room-members {
+    margin-bottom: 1em;
+}
+
 #room-details,
 #room-form,
 #assignment,
