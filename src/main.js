@@ -46,9 +46,7 @@ const SecretSanta = React.createClass({
             }
         });
 
-        this.setState({
-            roomName: roomName
-        });
+        this.setState({ roomName: roomName });
     },
 
     handleAddUser: function(userName) {
@@ -57,7 +55,7 @@ const SecretSanta = React.createClass({
     },
 
     handleAssign: function(assignments) {
-        firebaseRef.child(this.props.roomName).child('assignments').set(assignments);
+        firebaseRef.child(this.state.roomName).child('assignments').set(assignments);
     },
 
     render: function() {
