@@ -1,5 +1,3 @@
-'use strict';
-
 const React = require('react');
 
 // http://stackoverflow.com/a/12646864

@@ -4,16 +4,19 @@
   "description": "Organize your Secret Santa without a physical hat of names!",
   "main": "index.js",
   "scripts": {
-    "build": "browserify -t [ babelify --presets [ react ] ] src/main.js -o index.js",
+    "build": "browserify -t [ babelify --presets [ es2015 react ] ] src/main.js -o index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Karen Liu",
   "license": "ISC",
   "dependencies": {
-    "babel-preset-react": "^6.1.18",
-    "babelify": "^7.2.0",
     "firebase": "^2.3.2",
     "react": "^0.14.3",
     "react-dom": "^0.14.3"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.1.18",
+    "babelify": "^7.2.0"
   }
 }
