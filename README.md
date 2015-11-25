@@ -23,3 +23,8 @@ npm run build
 ```
 
 This will output an `index.js` which is referenced by `index.html`.
+
+To have `index.js` constantly update whenever a source file is changed, run:
+```
+npm run watch
+```
