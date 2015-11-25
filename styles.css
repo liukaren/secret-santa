@@ -8,12 +8,6 @@ body {
     font-size: .8em;
 }
 
-.content-container {
-    margin: 2em auto;
-    text-align: center;
-    width: 80%;
-}
-
 #room-members {
     margin-bottom: 1em;
 }

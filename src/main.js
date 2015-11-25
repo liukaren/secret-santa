@@ -60,29 +60,31 @@ const SecretSanta = React.createClass({
 
     render: function() {
         return (
-            <div>
-                {
-                    this.state.roomName === null ?
-                    <SelectRoomForm handleSubmitRoom={ this.handleSubmitRoom } /> :
-                    <RoomMemberList members={ this.state.members } />
-                }
-                {
-                    this.state.roomName !== null && this.state.currentUserRef === null &&
-                        !this.state.hasAssignments ?
-                    <CurrentUserForm handleAddUser={ this.handleAddUser } /> :
-                    null
-                }
-                {
-                    Object.keys(this.state.members).length > 1 && !this.state.hasAssignments ?
-                    <AssignButton members={ this.state.members }
-                                  handleAssign={ this.handleAssign } /> :
-                    null
-                }
-                {
-                    this.state.assignmentName !== null ?
-                    <Assignment name={ this.state.assignmentName } /> :
-                    null
-                }
+            <div className="row center-xs">
+                <div className="col-xs-10 col-md-8">
+                    {
+                        this.state.roomName === null ?
+                        <SelectRoomForm handleSubmitRoom={ this.handleSubmitRoom } /> :
+                        <RoomMemberList members={ this.state.members } />
+                    }
+                    {
+                        this.state.roomName !== null && this.state.currentUserRef === null &&
+                            !this.state.hasAssignments ?
+                        <CurrentUserForm handleAddUser={ this.handleAddUser } /> :
+                        null
+                    }
+                    {
+                        Object.keys(this.state.members).length > 1 && !this.state.hasAssignments ?
+                        <AssignButton members={ this.state.members }
+                                      handleAssign={ this.handleAssign } /> :
+                        null
+                    }
+                    {
+                        this.state.assignmentName !== null ?
+                        <Assignment name={ this.state.assignmentName } /> :
+                        null
+                    }
+                </div>
             </div>
         );
     }
