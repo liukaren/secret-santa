@@ -5,6 +5,7 @@ const Firebase = require('firebase');
 const AssignButton = require('./assign_button.js');
 const Assignment = require('./assignment.js');
 const CurrentUserForm = require('./current_user_form.js');
+const ReminderButtons = require('./reminder_buttons.js');
 const RoomMemberList = require('./room_member_list.js');
 const SelectRoomForm = require('./select_room_form.js');
 
@@ -14,7 +15,7 @@ const SecretSanta = React.createClass({
     getInitialState: function() {
         return {
             roomName: null,
-            members: {}, // a mapping from user's Firebase key to user's name,
+            members: {}, // a mapping from user's Firebase key to user's name
             hasAssignments: true, // default to true so we hide the button initially
             assignmentName: null,
             currentUserRef: null
@@ -57,32 +58,39 @@ const SecretSanta = React.createClass({
     },
 
     render: function() {
+        const reminderEl = this.state.assignmentName !== null ? (
+            <ReminderButtons name={ this.state.assignmentName } />
+        ) : null;
+
         return (
-            <div className="row center-xs">
-                <div className="col-xs-10 col-md-8">
-                    {
-                        this.state.roomName === null ?
-                        <SelectRoomForm handleSubmitRoom={ this.handleSubmitRoom } /> :
-                        <RoomMemberList members={ this.state.members } />
-                    }
-                    {
-                        this.state.roomName !== null && this.state.currentUserRef === null &&
-                            !this.state.hasAssignments ?
-                        <CurrentUserForm handleAddUser={ this.handleAddUser } /> :
-                        null
-                    }
-                    {
-                        Object.keys(this.state.members).length > 1 && !this.state.hasAssignments ?
-                        <AssignButton members={ this.state.members }
-                                      handleAssign={ this.handleAssign } /> :
-                        null
-                    }
-                    {
-                        this.state.assignmentName !== null ?
-                        <Assignment name={ this.state.assignmentName } /> :
-                        null
-                    }
+            <div>
+                <div className="row center-xs">
+                    <div className="col-xs-10 col-md-8">
+                        {
+                            this.state.roomName === null ?
+                            <SelectRoomForm handleSubmitRoom={ this.handleSubmitRoom } /> :
+                            <RoomMemberList members={ this.state.members } />
+                        }
+                        {
+                            this.state.roomName !== null && this.state.currentUserRef === null &&
+                                !this.state.hasAssignments ?
+                            <CurrentUserForm handleAddUser={ this.handleAddUser } /> :
+                            null
+                        }
+                        {
+                            Object.keys(this.state.members).length > 1 && !this.state.hasAssignments ?
+                            <AssignButton members={ this.state.members }
+                                          handleAssign={ this.handleAssign } /> :
+                            null
+                        }
+                        {
+                            this.state.assignmentName !== null ?
+                             <Assignment name={ this.state.assignmentName } /> :
+                            null
+                        }
+                    </div>
                 </div>
+                { reminderEl }
             </div>
         );
     }
