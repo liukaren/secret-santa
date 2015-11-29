@@ -61,6 +61,8 @@ body {
     border-bottom: solid 2px #c9c9c9;
     transition: border 0.3s;
     outline: none;
+
+    max-width: 100%; // better fit on mobile screens
 }
 
 .input[type="text"]:focus,
