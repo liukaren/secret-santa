@@ -8,7 +8,9 @@ module.exports = React.createClass({
     handleSubmitRoom: function(e) {
         e.preventDefault();
         const roomName = $('#room-input').val();
-        this.props.handleSubmitRoom.call(null, roomName);
+        if (!!roomName.trim()) {
+            this.props.handleSubmitRoom.call(null, roomName);
+        }
     },
 
     render: function() {

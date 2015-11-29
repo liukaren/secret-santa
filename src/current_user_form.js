@@ -8,7 +8,9 @@ module.exports = React.createClass({
     handleAddUser: function(e) {
         e.preventDefault();
         const userName = $('#user-name-input').val();
-        this.props.handleAddUser.call(null, userName);
+        if (!!userName.trim()) {
+            this.props.handleAddUser.call(null, userName);
+        }
     },
 
     render: function() {
