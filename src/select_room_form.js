@@ -7,7 +7,7 @@ module.exports = React.createClass({
 
     handleSubmitRoom: function(e) {
         e.preventDefault();
-        const roomName = $('#room-input').val();
+        const roomName = $('#room-input').val().toLowerCase();
         if (!!roomName.trim()) {
             this.props.handleSubmitRoom.call(null, roomName);
         }
