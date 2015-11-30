@@ -86,6 +86,8 @@ const SecretSanta = React.createClass({
             }
             if (this.state.assignmentName) {
                 displayedEls.push(<Assignment name={ this.state.assignmentName } />);
+            } else if (this.state.hasAssignments) {
+                displayedEls.push(<div>Sorry, Secret Santas have already been assigned!</div>);
             }
         }
 
