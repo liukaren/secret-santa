@@ -4,6 +4,10 @@ body {
     margin: 2em 0;
 }
 
+a {
+    text-decoration: none;
+}
+
 .subdued-text {
     color: gray;
     font-size: .8em;

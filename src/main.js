@@ -24,13 +24,8 @@ const SecretSanta = React.createClass({
 
     handleSubmitRoom: function(roomName) {
         const usersRef = firebaseRef.child(roomName).child('users');
-        usersRef.on('child_added', (userResponse) => {
-            const userKey = userResponse.key();
-            const userName = userResponse.val();
-
-            let newMembers = Object.assign({}, this.state.members);
-            newMembers[userKey] = userName;
-            this.setState({ members: newMembers });
+        usersRef.on('value', (usersResponse) => {
+            this.setState({ members: usersResponse.val() });
         });
 
         firebaseRef.child(roomName).child('assignments').on('value', (assignments) => {
