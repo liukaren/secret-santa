@@ -80,14 +80,19 @@ const SecretSanta = React.createClass({
             if (!this.state.hasAssignments && !this.state.currentUserRef) {
                 displayedEls.push(<CurrentUserForm handleAddUser={ this.handleAddUser } />);
             }
-            if (!this.state.hasAssignments && Object.keys(this.state.members).length > 1) {
-                displayedEls.push(<AssignButton members={ this.state.members }
-                                  handleAssign={ this.handleAssign } />);
-            }
-            if (this.state.assignmentName) {
-                displayedEls.push(<Assignment name={ this.state.assignmentName } />);
-            } else if (this.state.hasAssignments) {
-                displayedEls.push(<div>Sorry, Secret Santas have already been assigned!</div>);
+            if (!this.state.hasAssignments) {
+                if (Object.keys(this.state.members).length > 1) {
+                    displayedEls.push(<AssignButton members={ this.state.members }
+                                      handleAssign={ this.handleAssign } />);
+                } else {
+                    displayedEls.push(<div>Waiting for others to join the room...</div>);
+                }
+            } else {
+                if (this.state.assignmentName) {
+                    displayedEls.push(<Assignment name={ this.state.assignmentName } />);
+                } else {
+                    displayedEls.push(<div>Sorry, Secret Santas have already been assigned!</div>);
+                }
             }
         }
 
