@@ -16,31 +16,40 @@ const SecretSanta = React.createClass({
         return {
             roomName: null,
             members: {}, // a mapping from user's Firebase key to user's name
-            hasAssignments: true, // default to true so we hide the button initially
+            hasAssignments: false,
+            isLoading: false,
             assignmentName: null,
             currentUserRef: null
         };
     },
 
     handleSubmitRoom: function(roomName) {
+        this.setState({
+            roomName: roomName,
+            isLoading: true
+        });
+
         const usersRef = firebaseRef.child(roomName).child('users');
         usersRef.on('value', (usersResponse) => {
-            this.setState({ members: usersResponse.val() });
+            this.setState({ members: usersResponse.val() || {} });
         });
 
         firebaseRef.child(roomName).child('assignments').on('value', (assignments) => {
-            this.setState({ hasAssignments: assignments.val() });
+            let newState = {
+                hasAssignments: assignments.val(),
+                isLoading: false
+            };
 
             // If assignments exist, show the current user's assignment.
             if (this.state.currentUserRef) {
                 const currentUserKey = this.state.currentUserRef.key();
                 const assignmentKey = assignments.val()[currentUserKey];
 
-                this.setState({ assignmentName: this.state.members[assignmentKey] });
+                newState.assignmentName = this.state.members[assignmentKey];
             }
-        });
 
-        this.setState({ roomName: roomName });
+            this.setState(newState);
+        });
     },
 
     handleAddUser: function(userName) {
@@ -57,32 +66,34 @@ const SecretSanta = React.createClass({
             <ReminderButtons name={ this.state.assignmentName } />
         ) : null;
 
+        let displayedEls = [];
+
+        if (this.state.roomName === null) {
+            displayedEls.push(<SelectRoomForm handleSubmitRoom={ this.handleSubmitRoom } />);
+        }
+
+        if (this.state.isLoading) {
+            displayedEls.push(<div className="loader">Loading...</div>);
+        } else if (this.state.roomName) {
+            displayedEls.push(<RoomMemberList members={ this.state.members } />);
+
+            if (!this.state.hasAssignments && !this.state.currentUserRef) {
+                displayedEls.push(<CurrentUserForm handleAddUser={ this.handleAddUser } />);
+            }
+            if (!this.state.hasAssignments && Object.keys(this.state.members).length > 1) {
+                displayedEls.push(<AssignButton members={ this.state.members }
+                                  handleAssign={ this.handleAssign } />);
+            }
+            if (this.state.assignmentName) {
+                displayedEls.push(<Assignment name={ this.state.assignmentName } />);
+            }
+        }
+
         return (
             <div>
                 <div className="row center-xs">
                     <div className="col-xs-10 col-md-8">
-                        {
-                            this.state.roomName === null ?
-                            <SelectRoomForm handleSubmitRoom={ this.handleSubmitRoom } /> :
-                            <RoomMemberList members={ this.state.members } />
-                        }
-                        {
-                            this.state.roomName !== null && this.state.currentUserRef === null &&
-                                !this.state.hasAssignments ?
-                            <CurrentUserForm handleAddUser={ this.handleAddUser } /> :
-                            null
-                        }
-                        {
-                            Object.keys(this.state.members).length > 1 && !this.state.hasAssignments ?
-                            <AssignButton members={ this.state.members }
-                                          handleAssign={ this.handleAssign } /> :
-                            null
-                        }
-                        {
-                            this.state.assignmentName !== null ?
-                             <Assignment name={ this.state.assignmentName } /> :
-                            null
-                        }
+                        { displayedEls }
                     </div>
                 </div>
                 { reminderEl }
