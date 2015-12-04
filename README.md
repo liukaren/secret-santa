@@ -1,8 +1,6 @@
 # secret-santa
 Organize your Secret Santa without a physical hat of names!
 
-**Oh my gah don't look at this I'm not ready yet**
-
 http://karenliu1.github.io/secret-santa/
 
 ## What's it for?
@@ -11,11 +9,9 @@ Ever wanted to organize a Secret Santa? Did you pick names out of a hat? Instead
 
 Mostly this is just a toy app to play around with React, though!
 
-I am aware that there is no security and no guards yet. Please don't try to break it ;_;
-
 ## How do I build it?
 
-This app uses [React](https://facebook.github.io/react/).
+This app uses [React](https://facebook.github.io/react/) and [Firebase](https://www.firebase.com/).
 
 To build it, run:
 ```
@@ -28,3 +24,10 @@ To have `index.js` constantly update whenever a source file is changed, run:
 ```
 npm run watch
 ```
+
+## Credits
+
+* [Call Me Nick](http://callmenick.com/post/various-css-input-text-styles) for some sweet input styles
+* [codrops Creative Button Styles](http://tympanus.net/Development/CreativeButtons/) for button styles
+* [codrops Icon Hover Effects](http://tympanus.net/Development/IconHoverEffects/) for email button style
+* [lukehaas](http://projects.lukehaas.me/css-loaders/) for loading spinner
