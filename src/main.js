@@ -35,13 +35,15 @@ const SecretSanta = React.createClass({
         });
 
         firebaseRef.child(roomName).child('assignments').on('value', (assignments) => {
+            const hasAssignments = assignments.val()
+
             let newState = {
-                hasAssignments: assignments.val(),
+                hasAssignments: hasAssignments,
                 isLoading: false
             };
 
             // If assignments exist, show the current user's assignment.
-            if (this.state.currentUserRef) {
+            if (hasAssignments && this.state.currentUserRef) {
                 const currentUserKey = this.state.currentUserRef.key();
                 const assignmentKey = assignments.val()[currentUserKey];
 
@@ -76,12 +78,13 @@ const SecretSanta = React.createClass({
         if (this.state.isLoading) {
             displayedEls.push(<div className="loader">Loading...</div>);
         } else if (this.state.roomName) {
-            displayedEls.push(<RoomMemberList members={ this.state.members } />);
-
-            if (!this.state.hasAssignments && !this.state.currentUserRef) {
-                displayedEls.push(<CurrentUserForm handleAddUser={ this.handleAddUser } />);
-            }
             if (!this.state.hasAssignments) {
+                displayedEls.push(<RoomMemberList members={ this.state.members } />);
+
+                if (!this.state.currentUserRef) {
+                    displayedEls.push(<CurrentUserForm handleAddUser={ this.handleAddUser } />);
+                }
+
                 if (Object.keys(this.state.members).length > 1) {
                     displayedEls.push(<AssignButton members={ this.state.members }
                                       handleAssign={ this.handleAssign } />);
