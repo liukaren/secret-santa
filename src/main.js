@@ -54,6 +54,7 @@ const SecretSanta = React.createClass({
 
     handleAddUser: function(userName) {
         const userRef = firebaseRef.child(this.state.roomName).child('users').push(userName);
+        userRef.onDisconnect().remove(); // auto-remove me if I close the browser
         this.setState({ currentUserRef: userRef });
     },
 
