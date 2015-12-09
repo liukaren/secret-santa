@@ -72,30 +72,50 @@ const SecretSanta = React.createClass({
         let displayedEls = [];
 
         if (this.state.roomName === null) {
-            displayedEls.push(<SelectRoomForm handleSubmitRoom={ this.handleSubmitRoom } />);
+            displayedEls.push(
+                <SelectRoomForm key="select-room-form"
+                                handleSubmitRoom={ this.handleSubmitRoom } />
+            );
         }
 
         if (this.state.isLoading) {
-            displayedEls.push(<div className="loader">Loading...</div>);
+            displayedEls.push(<div key="loader" className="loader">Loading...</div>);
         } else if (this.state.roomName) {
             if (!this.state.hasAssignments) {
-                displayedEls.push(<RoomMemberList members={ this.state.members } />);
+                displayedEls.push(
+                    <RoomMemberList key="room-member-list" members={ this.state.members } />
+                );
 
                 if (!this.state.currentUserRef) {
-                    displayedEls.push(<CurrentUserForm handleAddUser={ this.handleAddUser } />);
+                    displayedEls.push(
+                        <CurrentUserForm key="current-user-form"
+                                         handleAddUser={ this.handleAddUser } />
+                    );
                 }
 
                 if (Object.keys(this.state.members).length > 1) {
-                    displayedEls.push(<AssignButton members={ this.state.members }
-                                      handleAssign={ this.handleAssign } />);
+                    displayedEls.push(
+                        <AssignButton key="assign-button"
+                                      members={ this.state.members }
+                                      handleAssign={ this.handleAssign } />
+                    );
                 } else {
-                    displayedEls.push(<div>Waiting for others to join the room...</div>);
+                    displayedEls.push(
+                        <div key="waiting">Waiting for others to join the room...</div>
+                    );
                 }
             } else {
                 if (this.state.assignmentName) {
-                    displayedEls.push(<Assignment name={ this.state.assignmentName } />);
+                    displayedEls.push(
+                        <Assignment key="assignment"
+                                    name={ this.state.assignmentName } />
+                    );
                 } else {
-                    displayedEls.push(<div>Sorry, Secret Santas have already been assigned!</div>);
+                    displayedEls.push(
+                        <div key="already-assigned">
+                            Sorry, Secret Santas have already been assigned!
+                        </div>
+                    );
                 }
             }
         }
