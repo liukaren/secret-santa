@@ -11,6 +11,16 @@ const SelectRoomForm = require('./select_room_form.js');
 
 const firebaseRef = new Firebase('https://scorching-inferno-8300.firebaseio.com/');
 
+const PAGES = {
+    SELECT_ROOM: 'select-room',
+    LOADING: 'loading',
+    ADD_USER: 'add-user',
+    WAIT: 'wait-for-more-users',
+    SHAKE: 'shake-hat',
+    ALREADY_ASSIGNED: 'already-assigned',
+    SHOW_ASSIGNMENT: 'show-assignment'
+};
+
 const SecretSanta = React.createClass({
     getInitialState: function() {
         return {
@@ -64,70 +74,67 @@ const SecretSanta = React.createClass({
         firebaseRef.child(this.state.roomName).child('assignments').set(assignments);
     },
 
-    render: function() {
-        const reminderEl = this.state.assignmentName !== null ? (
-            <ReminderButtons name={ this.state.assignmentName } />
-        ) : null;
-
-        let displayedEls = [];
-
-        if (this.state.roomName === null) {
-            displayedEls.push(
-                <SelectRoomForm key="select-room-form"
-                                handleSubmitRoom={ this.handleSubmitRoom } />
-            );
+    getCurrentPage: function() {
+        const state = this.state;
+        const hasOtherMembers = Object.keys(state.members).length > 1;
+        if (state.roomName === null) { return PAGES.SELECT_ROOM; }
+        if (state.isLoading) { return PAGES.LOADING; }
+        if (!state.hasAssignments) {
+            if (!state.currentUserRef) { return PAGES.ADD_USER; }
+            if (!hasOtherMembers) { return PAGES.WAIT; }
+            return PAGES.SHAKE;
+        } else {
+            if (!state.assignmentName) { return PAGES.ALREADY_ASSIGNED; }
+            return PAGES.SHOW_ASSIGNMENT;
         }
+    },
 
-        if (this.state.isLoading) {
-            displayedEls.push(<div key="loader" className="loader">Loading...</div>);
-        } else if (this.state.roomName) {
-            if (!this.state.hasAssignments) {
-                displayedEls.push(
-                    <RoomMemberList key="room-member-list" members={ this.state.members } />
-                );
-
-                if (!this.state.currentUserRef) {
-                    displayedEls.push(
-                        <CurrentUserForm key="current-user-form"
-                                         handleAddUser={ this.handleAddUser } />
-                    );
-                }
-
-                if (Object.keys(this.state.members).length > 1) {
-                    displayedEls.push(
-                        <AssignButton key="assign-button"
-                                      members={ this.state.members }
-                                      handleAssign={ this.handleAssign } />
-                    );
-                } else {
-                    displayedEls.push(
-                        <div key="waiting">Waiting for others to join the room...</div>
-                    );
-                }
-            } else {
-                if (this.state.assignmentName) {
-                    displayedEls.push(
-                        <Assignment key="assignment"
-                                    name={ this.state.assignmentName } />
-                    );
-                } else {
-                    displayedEls.push(
-                        <div key="already-assigned">
-                            Sorry, Secret Santas have already been assigned!
-                        </div>
-                    );
-                }
-            }
+    render: function() {
+        const page = this.getCurrentPage();
+        let pageEl;
+        switch(page) {
+            case PAGES.SELECT_ROOM:
+                pageEl = <SelectRoomForm handleSubmitRoom={ this.handleSubmitRoom } />;
+                break;
+            case PAGES.LOADING:
+                pageEl = <div className="loader">Loading...</div>;
+                break;
+            case PAGES.ADD_USER:
+                pageEl = (<div>
+                    <RoomMemberList members={ this.state.members } />
+                    <CurrentUserForm handleAddUser={ this.handleAddUser } />
+                </div>);
+                break;
+            case PAGES.WAIT:
+                pageEl = (<div>
+                    <RoomMemberList members={ this.state.members } />
+                    <div>Waiting for others to join the room...</div>;
+                </div>);
+                break;
+            case PAGES.SHAKE:
+                pageEl = (<div>
+                    <RoomMemberList members={ this.state.members } />
+                    <AssignButton members={ this.state.members }
+                                  handleAssign={ this.handleAssign } />
+                </div>);
+                break;
+            case PAGES.ALREADY_ASSIGNED:
+                pageEl = <div>Sorry, Secret Santas have already been assigned!</div>;
+                break;
+            case PAGES.SHOW_ASSIGNMENT:
+                pageEl = <Assignment name={ this.state.assignmentName } />;
+                break;
         }
 
         return (
             <div>
                 <div className="row center-xs">
                     <div className="col-xs-10 col-md-8">
-                        { displayedEls }
+                        { pageEl }
                     </div>
                 </div>
-                { reminderEl }
+                { page === PAGES.SHOW_ASSIGNMENT &&
+                    <ReminderButtons name={ this.state.assignmentName } /> }
             </div>
         );
     }
