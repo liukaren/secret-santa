@@ -1,5 +1,6 @@
 # secret-santa
-Organize your Secret Santa without a physical hat of names!
+
+<img src="santa_hat.png" width="30"> Organize your Secret Santa without a physical hat of names!
 
 http://karenliu1.github.io/secret-santa/
 
