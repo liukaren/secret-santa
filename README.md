@@ -16,6 +16,7 @@ This app uses [React](https://facebook.github.io/react/) and [Firebase](https://
 
 To build it, run:
 ```
+npm install
 npm run build
 ```
 
