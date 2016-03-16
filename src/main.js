@@ -108,7 +108,7 @@ const SecretSanta = React.createClass({
             case PAGES.WAIT:
                 pageEl = (<div>
                     <RoomMemberList members={ this.state.members } />
-                    <div>Waiting for others to join the room...</div>;
+                    <div>Waiting for others to join the room...</div>
                 </div>);
                 break;
             case PAGES.SHAKE:
