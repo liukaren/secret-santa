@@ -9,7 +9,14 @@ const ReminderButtons = require('./reminder_buttons.js');
 const RoomMemberList = require('./room_member_list.js');
 const SelectRoomForm = require('./select_room_form.js');
 
-const firebaseRef = new Firebase('https://scorching-inferno-8300.firebaseio.com/');
+const firebaseConfig = {
+    apiKey: "AIzaSyAarGCpopyjzzacan_ao1CpGmFczIKGXiw",
+    authDomain: "scorching-inferno-8300.firebaseapp.com",
+    databaseURL: "https://scorching-inferno-8300.firebaseio.com",
+    storageBucket: "scorching-inferno-8300.appspot.com",
+};
+firebase.initializeApp(firebaseConfig);
+const firebaseDb = Firebase.database();
 
 const PAGES = {
     SELECT_ROOM: 'select-room',
@@ -39,12 +46,12 @@ const SecretSanta = React.createClass({
             isLoading: true
         });
 
-        const usersRef = firebaseRef.child(roomName).child('users');
+        const usersRef = firebaseDb.ref(`${roomName}/users`);
         usersRef.on('value', (usersResponse) => {
             this.setState({ members: usersResponse.val() || {} });
         });
 
-        firebaseRef.child(roomName).child('assignments').on('value', (assignments) => {
+        firebaseDb.ref(`${roomName}/assignments`).on('value', (assignments) => {
             const hasAssignments = assignments.val()
 
             let newState = {
@@ -54,7 +61,7 @@ const SecretSanta = React.createClass({
 
             // If assignments exist, show the current user's assignment.
             if (hasAssignments && this.state.currentUserRef) {
-                const currentUserKey = this.state.currentUserRef.key();
+                const currentUserKey = this.state.currentUserRef.key;
                 const assignmentKey = assignments.val()[currentUserKey];
 
                 newState.assignmentName = this.state.members[assignmentKey];
@@ -65,13 +72,13 @@ const SecretSanta = React.createClass({
     },
 
     handleAddUser: function(userName) {
-        const userRef = firebaseRef.child(this.state.roomName).child('users').push(userName);
+        const userRef = firebaseDb.ref(`${this.state.roomName}/users`).push(userName);
         userRef.onDisconnect().remove(); // auto-remove me if I close the browser
         this.setState({ currentUserRef: userRef });
     },
 
     handleAssign: function(assignments) {
-        firebaseRef.child(this.state.roomName).child('assignments').set(assignments);
+        firebaseDb.ref(`${this.state.roomName}/assignments`).set(assignments);
     },
 
     getCurrentPage: function() {
