@@ -135,10 +135,8 @@ const SecretSanta = React.createClass({
 
         return (
             <div>
-                <div className="row center-xs">
-                    <div className="col-xs-10 col-md-8">
-                        { pageEl }
-                    </div>
+                <div className="main-content">
+                    { pageEl }
                 </div>
                 { page === PAGES.SHOW_ASSIGNMENT &&
                     <ReminderButtons name={ this.state.assignmentName } /> }

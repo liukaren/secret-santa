@@ -11,15 +11,13 @@ module.exports = React.createClass({
         const mailBody = encodeURIComponent(this.props.name);
 
         return (
-            <div className="row center-xs reminder-button-container">
-                <div className="col-xs-12">
-                    <div>Send a reminder:</div>
-                    <div className="reminder-button hi-icon-effect-5 hi-icon-effect-5c">
-                        <a href={ `mailto:someone@example.com?subject=${mailSubject}&body=${mailBody}` }
-                           className="hi-icon hi-icon-mail">
-                            Email reminder
-                        </a>
-                    </div>
+            <div className="reminder-button-container">
+                <div>Send a reminder:</div>
+                <div className="reminder-button hi-icon-effect-5 hi-icon-effect-5c">
+                    <a href={ `mailto:someone@example.com?subject=${mailSubject}&body=${mailBody}` }
+                       className="hi-icon hi-icon-mail">
+                        Email reminder
+                    </a>
                 </div>
             </div>
         );

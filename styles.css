@@ -8,6 +8,11 @@ a {
     text-decoration: none;
 }
 
+.main-content {
+    text-align: center;
+    margin: 0 1rem;
+}
+
 .subdued-text {
     color: gray;
     font-size: .8em;
@@ -19,6 +24,7 @@ a {
     color: white;
     text-align: center;
     padding: 2em 0;
+    width: 100%;
 }
 
 .reminder-button {
