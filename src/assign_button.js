@@ -12,6 +12,10 @@ function shuffleArray(array) {
 }
 
 module.exports = React.createClass({
+    getInitialState() {
+        return { isHovered: false };
+    },
+
     propTypes: {
         members: React.PropTypes.object.isRequired,
         handleAssign: React.PropTypes.func.isRequired
@@ -29,23 +33,17 @@ module.exports = React.createClass({
         this.props.handleAssign.call(null, newAssignments);
     },
 
-    handleMouseEnter: function() {
-        $('#button-text').addClass('animated shake');
-    },
-
-    handleMouseLeave: function() {
-        $('#button-text').removeClass('animated shake');
-    },
-
     render: function() {
         return (
             <button id="assign-button"
                     className="btn btn-1 btn-1e"
                     type="submit"
                     onClick={ this.handleAssign }
-                    onMouseEnter={ this.handleMouseEnter }
-                    onMouseLeave={ this.handleMouseLeave }>
-                <div id="button-text">Shake the hat</div>
+                    onMouseEnter={ () => this.setState({ isHovered: true }) }
+                    onMouseLeave={ () => this.setState({ isHovered: false }) }>
+                <div className={ this.state.isHovered ? 'animated shake' : '' }>
+                    Shake the hat
+                </div>
             </button>
         );
     }

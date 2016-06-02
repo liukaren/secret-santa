@@ -7,7 +7,7 @@ module.exports = React.createClass({
 
     handleAddUser: function(e) {
         e.preventDefault();
-        const userName = $('#user-name-input').val();
+        const userName = this._input.value;
         if (!!userName.trim()) {
             this.props.handleAddUser.call(null, userName);
         }
@@ -20,7 +20,7 @@ module.exports = React.createClass({
                     <div><strong>Who are you?</strong></div>
                     <input className="input"
                            type="text"
-                           id="user-name-input" />
+                           ref={ (c) => { this._input = c } } />
                 </label>
                 <button className="btn btn-1 btn-1e"
                         type="submit">

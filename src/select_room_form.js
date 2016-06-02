@@ -7,7 +7,7 @@ module.exports = React.createClass({
 
     handleSubmitRoom: function(e) {
         e.preventDefault();
-        const roomName = $('#room-input').val().toLowerCase();
+        const roomName = this._roomInput.value.toLowerCase();
         if (!!roomName.trim()) {
             this.props.handleSubmitRoom.call(null, roomName);
         }
@@ -20,6 +20,7 @@ module.exports = React.createClass({
                     <div><strong>What is the Secret Santa room name?</strong></div>
                     <input className="input"
                            type="text"
+                           ref={ (c) => { this._roomInput = c } }
                            id="room-input" />
                 </label>
                 <button className="btn btn-1 btn-1e"
