@@ -15,7 +15,7 @@ const firebaseConfig = {
     databaseURL: "https://scorching-inferno-8300.firebaseio.com",
     storageBucket: "scorching-inferno-8300.appspot.com",
 };
-firebase.initializeApp(firebaseConfig);
+Firebase.initializeApp(firebaseConfig);
 const firebaseDb = Firebase.database();
 
 const PAGES = {
@@ -121,6 +121,7 @@ const SecretSanta = React.createClass({
             case PAGES.SHAKE:
                 pageEl = (<div>
                     <RoomMemberList members={ this.state.members } />
+                    <div>Once everyone has joined the room:</div>
                     <AssignButton members={ this.state.members }
                                   handleAssign={ this.handleAssign } />
                 </div>);
