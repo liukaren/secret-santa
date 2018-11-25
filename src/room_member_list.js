@@ -9,7 +9,7 @@ module.exports = React.createClass({
         const members = this.props.members;
         const roomMembersEl = Object.keys(members).map(function(memberKey) {
             return (
-                <span className="room-member" id={ memberKey } >
+                <span className="room-member" id={ memberKey } key={ memberKey }>
                     { members[memberKey] }
                 </span>
             );
