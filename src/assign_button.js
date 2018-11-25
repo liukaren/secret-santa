@@ -30,7 +30,7 @@ module.exports = React.createClass({
         }
         newAssignments[shuffledUsers[numUsers - 1]] = shuffledUsers[0];
 
-        this.props.handleAssign.call(null, newAssignments);
+        this.props.handleAssign(newAssignments);
     },
 
     render: function() {

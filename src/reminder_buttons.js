@@ -4,11 +4,12 @@ const mailSubject = encodeURIComponent('Reminder: You are the Secret Santa for..
 
 module.exports = React.createClass({
     propTypes: {
-        name: React.PropTypes.string.isRequired
+        name: React.PropTypes.string.isRequired,
+        info: React.PropTypes.string
     },
 
     render: function() {
-        const mailBody = encodeURIComponent(this.props.name);
+        const mailBody = encodeURIComponent(`${this.props.name}. Also: ${this.props.info}`);
 
         return (
             <div className="reminder-button-container">

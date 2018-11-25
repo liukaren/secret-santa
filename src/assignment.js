@@ -2,7 +2,8 @@ const React = require('react');
 
 module.exports = React.createClass({
     propTypes: {
-        name: React.PropTypes.string.isRequired
+        name: React.PropTypes.string.isRequired,
+        info: React.PropTypes.string
     },
 
     render: function() {
@@ -12,7 +13,16 @@ module.exports = React.createClass({
                 <span className="room-member">
                     { this.props.name }
                 </span>
+                { this.renderInfo() }
             </div>
         );
+    },
+
+    renderInfo: function() {
+        if (!this.props.info) return null;
+        return <div className="assignment-info">
+            <strong>They also wanted to let you know:</strong>
+            <p>{ this.props.info }</p>
+        </div>;
     }
 });

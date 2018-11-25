@@ -7,20 +7,28 @@ module.exports = React.createClass({
 
     handleAddUser: function(e) {
         e.preventDefault();
-        const userName = this._input.value;
+        const userName = this._nameInput.value;
+        const userInfo = this._infoInput.value;
         if (!!userName.trim()) {
-            this.props.handleAddUser.call(null, userName);
+            this.props.handleAddUser(userName, userInfo);
         }
     },
 
     render: function() {
         return (
             <form onSubmit={ this.handleAddUser }>
-                <label>
+                <label className="userFormLabel">
                     <div><strong>Who are you?</strong></div>
                     <input className="input"
                            type="text"
-                           ref={ (c) => { this._input = c } } />
+                           ref={ (c) => { this._nameInput = c } }
+                           required />
+                </label>
+                <label className="userFormLabel">
+                    <div><strong>Anything you want your Secret Santa to know? (optional)</strong></div>
+                    <input className="input"
+                           type="text"
+                           ref={ (c) => { this._infoInput = c } } />
                 </label>
                 <button className="btn btn-1 btn-1e"
                         type="submit">

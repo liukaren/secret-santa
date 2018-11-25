@@ -19908,7 +19908,7 @@ module.exports = React.createClass({
         }
         newAssignments[shuffledUsers[numUsers - 1]] = shuffledUsers[0];
 
-        this.props.handleAssign.call(null, newAssignments);
+        this.props.handleAssign(newAssignments);
     },
 
     render: function render() {
@@ -19944,7 +19944,8 @@ module.exports = React.createClass({
     displayName: "exports",
 
     propTypes: {
-        name: React.PropTypes.string.isRequired
+        name: React.PropTypes.string.isRequired,
+        info: React.PropTypes.string
     },
 
     render: function render() {
@@ -19960,6 +19961,25 @@ module.exports = React.createClass({
                 "span",
                 { className: "room-member" },
                 this.props.name
+            ),
+            this.renderInfo()
+        );
+    },
+
+    renderInfo: function renderInfo() {
+        if (!this.props.info) return null;
+        return React.createElement(
+            "div",
+            { className: "assignment-info" },
+            React.createElement(
+                "strong",
+                null,
+                "They also wanted to let you know:"
+            ),
+            React.createElement(
+                "p",
+                null,
+                this.props.info
             )
         );
     }
@@ -19979,9 +19999,10 @@ module.exports = React.createClass({
 
     handleAddUser: function handleAddUser(e) {
         e.preventDefault();
-        var userName = this._input.value;
+        var userName = this._nameInput.value;
+        var userInfo = this._infoInput.value;
         if (!!userName.trim()) {
-            this.props.handleAddUser.call(null, userName);
+            this.props.handleAddUser(userName, userInfo);
         }
     },
 
@@ -19993,7 +20014,7 @@ module.exports = React.createClass({
             { onSubmit: this.handleAddUser },
             React.createElement(
                 "label",
-                null,
+                { className: "userFormLabel" },
                 React.createElement(
                     "div",
                     null,
@@ -20006,7 +20027,26 @@ module.exports = React.createClass({
                 React.createElement("input", { className: "input",
                     type: "text",
                     ref: function ref(c) {
-                        _this._input = c;
+                        _this._nameInput = c;
+                    },
+                    required: true })
+            ),
+            React.createElement(
+                "label",
+                { className: "userFormLabel" },
+                React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                        "strong",
+                        null,
+                        "Anything you want your Secret Santa to know? (optional)"
+                    )
+                ),
+                React.createElement("input", { className: "input",
+                    type: "text",
+                    ref: function ref(c) {
+                        _this._infoInput = c;
                     } })
             ),
             React.createElement(
@@ -20080,7 +20120,7 @@ var SecretSanta = React.createClass({
         });
 
         firebaseDb.ref(roomName + '/assignments').on('value', function (assignments) {
-            var hasAssignments = assignments.val();
+            var hasAssignments = !!assignments.val();
 
             var newState = {
                 hasAssignments: hasAssignments,
@@ -20092,15 +20132,16 @@ var SecretSanta = React.createClass({
                 var currentUserKey = _this.state.currentUserRef.key;
                 var assignmentKey = assignments.val()[currentUserKey];
 
-                newState.assignmentName = _this.state.members[assignmentKey];
+                newState.assignmentName = _this.state.members[assignmentKey].name;
+                newState.assignmentInfo = _this.state.members[assignmentKey].info;
             }
 
             _this.setState(newState);
         });
     },
 
-    handleAddUser: function handleAddUser(userName) {
-        var userRef = firebaseDb.ref(this.state.roomName + '/users').push(userName);
+    handleAddUser: function handleAddUser(name, info) {
+        var userRef = firebaseDb.ref(this.state.roomName + '/users').push({ name: name, info: info });
         userRef.onDisconnect().remove(); // auto-remove me if I close the browser
         this.setState({ currentUserRef: userRef });
     },
@@ -20190,7 +20231,8 @@ var SecretSanta = React.createClass({
                 );
                 break;
             case PAGES.SHOW_ASSIGNMENT:
-                pageEl = React.createElement(Assignment, { name: this.state.assignmentName });
+                pageEl = React.createElement(Assignment, { name: this.state.assignmentName,
+                    info: this.state.assignmentInfo });
                 break;
         }
 
@@ -20202,7 +20244,8 @@ var SecretSanta = React.createClass({
                 { className: 'main-content' },
                 pageEl
             ),
-            page === PAGES.SHOW_ASSIGNMENT && React.createElement(ReminderButtons, { name: this.state.assignmentName })
+            page === PAGES.SHOW_ASSIGNMENT && React.createElement(ReminderButtons, { name: this.state.assignmentName,
+                info: this.state.assignmentInfo })
         );
     }
 });
@@ -20220,11 +20263,12 @@ module.exports = React.createClass({
     displayName: 'exports',
 
     propTypes: {
-        name: React.PropTypes.string.isRequired
+        name: React.PropTypes.string.isRequired,
+        info: React.PropTypes.string
     },
 
     render: function render() {
-        var mailBody = encodeURIComponent(this.props.name);
+        var mailBody = encodeURIComponent(this.props.name + '. Also: ' + this.props.info);
 
         return React.createElement(
             'div',
@@ -20266,7 +20310,7 @@ module.exports = React.createClass({
             return React.createElement(
                 "span",
                 { className: "room-member", id: memberKey, key: memberKey },
-                members[memberKey]
+                members[memberKey].name
             );
         });
 

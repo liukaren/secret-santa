@@ -52,7 +52,7 @@ const SecretSanta = React.createClass({
         });
 
         firebaseDb.ref(`${roomName}/assignments`).on('value', (assignments) => {
-            const hasAssignments = assignments.val()
+            const hasAssignments = !!assignments.val();
 
             let newState = {
                 hasAssignments: hasAssignments,
@@ -64,15 +64,17 @@ const SecretSanta = React.createClass({
                 const currentUserKey = this.state.currentUserRef.key;
                 const assignmentKey = assignments.val()[currentUserKey];
 
-                newState.assignmentName = this.state.members[assignmentKey];
+                newState.assignmentName = this.state.members[assignmentKey].name;
+                newState.assignmentInfo = this.state.members[assignmentKey].info;
             }
 
             this.setState(newState);
         });
     },
 
-    handleAddUser: function(userName) {
-        const userRef = firebaseDb.ref(`${this.state.roomName}/users`).push(userName);
+    handleAddUser: function(name, info) {
+        const userRef = firebaseDb.ref(`${this.state.roomName}/users`)
+            .push({ name: name, info: info });
         userRef.onDisconnect().remove(); // auto-remove me if I close the browser
         this.setState({ currentUserRef: userRef });
     },
@@ -130,7 +132,8 @@ const SecretSanta = React.createClass({
                 pageEl = <div>Sorry, Secret Santas have already been assigned!</div>;
                 break;
             case PAGES.SHOW_ASSIGNMENT:
-                pageEl = <Assignment name={ this.state.assignmentName } />;
+                pageEl = <Assignment name={ this.state.assignmentName }
+                                     info={ this.state.assignmentInfo } />;
                 break;
         }
 
@@ -140,7 +143,8 @@ const SecretSanta = React.createClass({
                     { pageEl }
                 </div>
                 { page === PAGES.SHOW_ASSIGNMENT &&
-                    <ReminderButtons name={ this.state.assignmentName } /> }
+                    <ReminderButtons name={ this.state.assignmentName }
+                                     info={ this.state.assignmentInfo } /> }
             </div>
         );
     }

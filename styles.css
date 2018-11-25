@@ -63,6 +63,11 @@ a {
     margin: 1rem;
 }
 
+.userFormLabel {
+    display: block;
+    margin-bottom: 1rem;
+}
+
 .input[type="text"] {
     color: #969696;
     font-size: 2rem;

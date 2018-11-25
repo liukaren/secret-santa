@@ -10,7 +10,7 @@ module.exports = React.createClass({
         const roomMembersEl = Object.keys(members).map(function(memberKey) {
             return (
                 <span className="room-member" id={ memberKey } key={ memberKey }>
-                    { members[memberKey] }
+                    { members[memberKey].name }
                 </span>
             );
         });
