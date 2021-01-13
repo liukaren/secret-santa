@@ -24,13 +24,26 @@ module.exports = React.createClass({
     handleAssign: function() {
         const shuffledUsers = shuffleArray(Object.keys(this.props.members));
         const numUsers = shuffledUsers.length;
-        let newAssignments = {};
-        for (let i = 0; i < numUsers - 1; i++) {
-            newAssignments[shuffledUsers[i]] = shuffledUsers[i+1];
-        }
-        newAssignments[shuffledUsers[numUsers - 1]] = shuffledUsers[0];
+        let assignments = {};
+        let readableAssignments = {};
 
-        this.props.handleAssign(newAssignments);
+        for (let i = 0; i < numUsers - 1; i++) {
+            const thisUser = shuffledUsers[i];
+            const nextUser = shuffledUsers[i + 1];
+            assignments[thisUser] = nextUser;
+            readableAssignments[this.props.members[thisUser].name] = `${
+              this.props.members[nextUser].name
+            } / ${this.props.members[nextUser].info}`;
+        }
+
+        const firstUser = shuffledUsers[0];
+        const lastUser = shuffledUsers[numUsers - 1];
+        assignments[lastUser] = firstUser
+        readableAssignments[
+          this.props.members[lastUser].name
+        ] = `${this.props.members[firstUser].name} / ${this.props.members[firstUser].info}`;
+
+        this.props.handleAssign(assignments, readableAssignments);
     },
 
     render: function() {

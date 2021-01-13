@@ -79,8 +79,11 @@ const SecretSanta = React.createClass({
         this.setState({ currentUserRef: userRef });
     },
 
-    handleAssign: function(assignments) {
-        firebaseDb.ref(`${this.state.roomName}/assignments`).set(assignments);
+    handleAssign: function(assignmentsById, assignmentsByName) {
+        firebaseDb.ref(`${this.state.roomName}/assignments`).set(assignmentsById);
+
+        // For reconciliation later, if needed
+        firebaseDb.ref(`${this.state.roomName}/readable-assignments`).set(assignmentsByName);
     },
 
     getCurrentPage: function() {
