@@ -1,6 +1,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Firebase = require('firebase');
+const qs = require('query-string');
 
 const AssignButton = require('./assign_button.js');
 const Assignment = require('./assignment.js');
@@ -40,6 +41,12 @@ const SecretSanta = React.createClass({
         };
     },
 
+    componentDidMount: function() {
+        // If provided, load the selected room from query params
+        const roomName = qs.parse(window.location.search).room;
+        if (roomName) this.handleSubmitRoom(roomName);
+    },
+
     handleSubmitRoom: function(roomName) {
         this.setState({
             roomName: roomName,
@@ -70,6 +77,10 @@ const SecretSanta = React.createClass({
 
             this.setState(newState);
         });
+
+        // Update the URL query params to reflect the selected room
+        const queryString = qs.stringify({ room: roomName });
+        history.pushState(null, null, `?${queryString}`);
     },
 
     handleAddUser: function(name, info) {
