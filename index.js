@@ -20495,7 +20495,11 @@ module.exports = React.createClass({
             React.createElement(
                 "p",
                 null,
-                this.props.info
+                React.createElement(
+                    "pre",
+                    null,
+                    this.props.info
+                )
             )
         );
     }
@@ -20559,8 +20563,7 @@ module.exports = React.createClass({
                         "Anything you want your Secret Santa to know? (optional)"
                     )
                 ),
-                React.createElement("input", { className: "input",
-                    type: "text",
+                React.createElement("textarea", { className: "input",
                     ref: function ref(c) {
                         _this._infoInput = c;
                     } })

@@ -26,8 +26,7 @@ module.exports = React.createClass({
                 </label>
                 <label className="userFormLabel">
                     <div><strong>Anything you want your Secret Santa to know? (optional)</strong></div>
-                    <input className="input"
-                           type="text"
+                    <textarea className="input"
                            ref={ (c) => { this._infoInput = c } } />
                 </label>
                 <button className="btn btn-1 btn-1e"

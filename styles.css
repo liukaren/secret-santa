@@ -68,7 +68,7 @@ a {
     margin-bottom: 1rem;
 }
 
-.input[type="text"] {
+.input {
     color: #969696;
     font-size: 2rem;
     padding: 10px;
@@ -80,8 +80,8 @@ a {
     max-width: 100%; // better fit on mobile screens
 }
 
-.input[type="text"]:focus,
-.input[type="text"].focus {
+.input:focus,
+.input.focus {
     border-bottom: solid 2px #969696;
 }
 

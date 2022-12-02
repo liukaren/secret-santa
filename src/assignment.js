@@ -22,7 +22,7 @@ module.exports = React.createClass({
         if (!this.props.info) return null;
         return <div className="assignment-info">
             <strong>They also wanted to let you know:</strong>
-            <p>{ this.props.info }</p>
+            <p><pre>{ this.props.info }</pre></p>
         </div>;
     }
 });
