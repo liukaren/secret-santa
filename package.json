@@ -11,7 +11,7 @@
   "author": "Karen Liu",
   "license": "ISC",
   "dependencies": {
-    "firebase": "^3.0.2",
+    "firebase": "^9.15.0",
     "query-string": "^6.13.8",
     "react": "^0.14.3",
     "react-dom": "^0.14.3"
